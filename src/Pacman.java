@@ -77,16 +77,79 @@ public class Pacman extends JPanel{
 		//load images
 		//the whole getclass and get resource works well if its the same class but i want it in a seperate folder just for good practice.
 		
-		wallImg = new ImageIcon(("/assets/wall.png")).getImage();
-		blueGhostImg= new ImageIcon(("/assets/blueGhost.png")).getImage();
-		orangeGhostImg= new ImageIcon(("/assets/orangeGhost.png")).getImage();
-		pinkGhostImg= new ImageIcon(("/assets/pinkGhost.png")).getImage();
-		redGhostImg= new ImageIcon(("/assets/redGhost.png")).getImage();
+		wallImg = new ImageIcon(getClass().getResource("./wall.png")).getImage();
+		blueGhostImg= new ImageIcon(getClass().getResource("./blueGhost.png")).getImage();
+		orangeGhostImg= new ImageIcon(getClass().getResource("./orangeGhost.png")).getImage();
+		pinkGhostImg= new ImageIcon(getClass().getResource("./pinkGhost.png")).getImage();
+		redGhostImg= new ImageIcon(getClass().getResource("./redGhost.png")).getImage();
 		
-		pacmanUpImg= new ImageIcon(("/assets/pacmanUp.png")).getImage();
-		pacmanDownImg= new ImageIcon(("/assets/pacmanDown.png")).getImage();
-		pacmanLeftImg= new ImageIcon(("/assets/pacmanLeft.png")).getImage();
-		pacmanRightImg= new ImageIcon(("/assets/pacmanRight.png")).getImage();
+		pacmanUpImg= new ImageIcon(getClass().getResource("./pacmanUp.png")).getImage();
+		pacmanDownImg= new ImageIcon(getClass().getResource("./pacmanDown.png")).getImage();
+		pacmanLeftImg= new ImageIcon(getClass().getResource("./pacmanLeft.png")).getImage();
+		pacmanRightImg= new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
+		
+		loadMap();
+		
 		
 	}
+	public void loadMap() {
+		walls = new HashSet<Block>();
+		foods = new HashSet<Block>();
+		ghosts = new HashSet<Block>();
+		
+		for(int r =0; r<rowCount;r++) {
+			for(int c=0;c<columnCount;c++) {
+				String row = tileMap[r];
+				char tileMapChar = row.charAt(c);
+				
+				int x = c * tileSize;
+				int y = r * tileSize;
+				
+				switch(tileMapChar) {
+				case 'X'://walls
+					Block wall = new Block(wallImg,x,y,tileSize,tileSize);
+					walls.add(wall);
+					break;
+				case 'b'://blue ghost
+					Block blueGhost = new Block(blueGhostImg,x,y,tileSize,tileSize);
+					ghosts.add(blueGhost);
+					break;
+				case 'o'://orange ghost
+					Block orangeghost = new Block(orangeGhostImg,x,y,tileSize,tileSize);
+					ghosts.add(orangeghost);
+					break;
+				case 'p'://pink ghost
+					Block pinkGhost = new Block(pinkGhostImg,x,y,tileSize,tileSize);
+					ghosts.add(pinkGhost);
+					break;
+				case 'r'://red ghost
+					Block redGhost = new Block(redGhostImg,x,y,tileSize,tileSize);
+					ghosts.add(redGhost);
+					break;
+				case 'P'://pacman
+					pacman = new Block(pacmanRightImg,x,y,tileSize,tileSize);
+					break;
+				case ' '://food
+					Block food = new Block(null,x + 14,y + 14, 4, 4);
+					foods.add(food);
+					break;
+				}
+				
+
+			}
+		}
+	}
+	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		draw(g);
+	}
+	
+	public void draw(Graphics g) {
+		g.drawImage(pacman.image,pacman.x,pacman.y,pacman.width,pacman.height,null);
+		for(Block ghost: ghosts) {
+			g.drawImage(ghost.image,ghost.x,ghost.y,ghost.width,ghost.height,null);
+		}
+	}
+	
 }
