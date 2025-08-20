@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Random;
 import javax.swing.*;
 
-public class Pacman extends JPanel{
+public class Pacman extends JPanel implements ActionListener{
 	class Block{
 		int x,y,width,height;
 		Image image;
@@ -150,6 +150,18 @@ public class Pacman extends JPanel{
 		for(Block ghost: ghosts) {
 			g.drawImage(ghost.image,ghost.x,ghost.y,ghost.width,ghost.height,null);
 		}
+		for(Block wall: walls) {
+			g.drawImage(wall.image,wall.x,wall.y,wall.width,wall.height,null);
+		}
+		g.setColor(Color.white);
+		for(Block food: foods) {
+			g.fillRect(food.x, food.y, food.width, food.height);
+		}
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		repaint();
 	}
 	
 }
