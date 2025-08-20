@@ -26,8 +26,20 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 			
 		}
 		void updateDirection(char direction) {
+			char prevDirection = this.direction;
 			this.direction = direction;
 			updateVelocity();
+			this.x += velocityX;
+			this.y += velocityY;
+			for(Block wall: walls) {
+				//this being pacman
+				if(collision (this, wall)) {
+					this.x -= this.velocityX;
+					this.y -= this.velocityY;
+					this.direction = prevDirection;
+					updateVelocity();
+				}
+			}
 		}
 		void updateVelocity() {
 			switch(this.direction) {
@@ -198,7 +210,21 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 	public void move() {
 		pacman.x += pacman.velocityX;
 		pacman.y += pacman.velocityY;
+		for(Block wall: walls) {
+			if(collision(pacman,wall)) {
+				pacman.x -= pacman.velocityX;
+				pacman.y -= pacman.velocityY;
+				break;
+			}
+		}
+	}
 	
+	public boolean collision(Block a, Block b) {
+		//should recoghnize this formula from the FlappyBird game
+		return a.x < b.x + b.width && //as top left corner doesnt reach bs top left corner
+				a.x + a.width > b.x &&//as top right corner passes bs top left corner
+				a.y < b.y + b.height &&//as top left corner doesnt reach bs bottom left corner
+				a.y + a.height > b.y;//as bottom left corner basses bs top left corner
 	}
 	
 	@Override
