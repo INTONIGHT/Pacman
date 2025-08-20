@@ -5,12 +5,16 @@ import java.util.HashSet;
 import java.util.Random;
 import javax.swing.*;
 
-public class Pacman extends JPanel implements ActionListener{
+public class Pacman extends JPanel implements ActionListener, KeyListener{
 	class Block{
 		int x,y,width,height;
 		Image image;
 		
 		int startX, startY;
+		char direction = 'U';//U,D,R,L
+		int velocityX = 0;
+		int velocityY = 0;
+		
 		Block(Image image, int x, int y, int width, int height){
 			this.image = image;
 			this.x = x;
@@ -20,6 +24,30 @@ public class Pacman extends JPanel implements ActionListener{
 			this.startX = x;
 			this.startY = y;
 			
+		}
+		void updateDirection(char direction) {
+			this.direction = direction;
+			updateVelocity();
+		}
+		void updateVelocity() {
+			switch(this.direction) {
+			case 'U' :
+				this.velocityX = 0;
+				this.velocityY = -tileSize / 4;
+				break;
+			case 'D' :
+				this.velocityX = 0;
+				this.velocityY = tileSize / 4;
+				break;
+			case 'L' :
+				this.velocityX = -tileSize / 4;
+				this.velocityY = 0;
+				break;
+			case 'R':
+				this.velocityX = tileSize / 4;
+				this.velocityY = 0;
+				break;
+			}
 		}
 	}
 	
@@ -44,6 +72,7 @@ public class Pacman extends JPanel implements ActionListener{
 	HashSet<Block> foods;
 	HashSet<Block> ghosts;
 	Block pacman;
+	Timer gameLoop;
 	
 	 //X = wall, O = skip, P = pac man, ' ' = food
     //Ghosts: b = blue, o = orange, p = pink, r = red
@@ -74,6 +103,9 @@ public class Pacman extends JPanel implements ActionListener{
 	Pacman(){
 		setPreferredSize(new Dimension(boardWidth,boardHeight));
 		setBackground(Color.black);
+		addKeyListener(this);
+		setFocusable(true);
+		
 		//load images
 		//the whole getclass and get resource works well if its the same class but i want it in a seperate folder just for good practice.
 		
@@ -89,6 +121,8 @@ public class Pacman extends JPanel implements ActionListener{
 		pacmanRightImg= new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
 		
 		loadMap();
+		gameLoop = new Timer(50,this);//20fps (1000/50)
+		gameLoop.start();
 		
 		
 	}
@@ -157,11 +191,49 @@ public class Pacman extends JPanel implements ActionListener{
 		for(Block food: foods) {
 			g.fillRect(food.x, food.y, food.width, food.height);
 		}
+		
+		
+	}
+	
+	public void move() {
+		pacman.x += pacman.velocityX;
+		pacman.y += pacman.velocityY;
+	
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		move();
 		repaint();
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+			pacman.updateDirection('U');
+			break;
+		case KeyEvent.VK_DOWN:
+			pacman.updateDirection('D');
+			break;
+		case KeyEvent.VK_LEFT:
+			pacman.updateDirection('L');
+			break;
+		case KeyEvent.VK_RIGHT:
+			pacman.updateDirection('R');
+			break;
+		}
+		
 	}
 	
 }
