@@ -244,21 +244,33 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		switch(e.getKeyCode()) {
-		case KeyEvent.VK_UP:
+		// TODO Auto-generated method stub\
+		if(e.getKeyCode() == KeyEvent.VK_UP) {
 			pacman.updateDirection('U');
-			break;
-		case KeyEvent.VK_DOWN:
-			pacman.updateDirection('D');
-			break;
-		case KeyEvent.VK_LEFT:
-			pacman.updateDirection('L');
-			break;
-		case KeyEvent.VK_RIGHT:
-			pacman.updateDirection('R');
-			break;
 		}
+		if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+			pacman.updateDirection('D');
+		}
+		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			pacman.updateDirection('L');
+		}
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			pacman.updateDirection('R');
+		}
+		
+		if(pacman.direction == 'U') {
+			pacman.image = pacmanUpImg;
+		}
+		if(pacman.direction == 'D') {
+			pacman.image = pacmanDownImg;
+		}
+		if(pacman.direction == 'L') {
+			pacman.image = pacmanLeftImg;
+		}
+		if(pacman.direction == 'R') {
+			pacman.image = pacmanRightImg;
+		}
+		
 		
 	}
 	
