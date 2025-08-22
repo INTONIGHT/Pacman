@@ -85,6 +85,8 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 	HashSet<Block> ghosts;
 	Block pacman;
 	Timer gameLoop;
+	char[] directions = {'U','D','L','R'};
+	Random random = new Random();
 	
 	 //X = wall, O = skip, P = pac man, ' ' = food
     //Ghosts: b = blue, o = orange, p = pink, r = red
@@ -133,6 +135,11 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 		pacmanRightImg= new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
 		
 		loadMap();
+		for(Block ghost: ghosts) {
+			char newDirection = directions[random.nextInt(4)];
+			ghost.updateDirection(newDirection);
+			
+		}
 		gameLoop = new Timer(50,this);//20fps (1000/50)
 		gameLoop.start();
 		
@@ -216,6 +223,27 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 				pacman.y -= pacman.velocityY;
 				break;
 			}
+			checkLeaveScreen(pacman);
+		}
+		//ghosts collisions
+		for(Block ghost: ghosts) {
+			//hacky fix for the ghosts getting stuck
+			if(ghost.y == tileSize * 9 && ghost.direction != 'U' && ghost.direction != 'D') {
+				ghost.updateDirection('U');
+			}
+			ghost.x += ghost.velocityX;
+			ghost.y +=ghost.velocityY;
+			for(Block wall: walls) {
+				if(collision(ghost,wall)) {
+					ghost.x -= ghost.velocityX;
+					ghost.y -= ghost.velocityY;
+					char newDirection = directions[random.nextInt(4)];
+					ghost.updateDirection(newDirection);
+				}
+				
+			}
+			
+			
 		}
 	}
 	
@@ -225,6 +253,19 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 				a.x + a.width > b.x &&//as top right corner passes bs top left corner
 				a.y < b.y + b.height &&//as top left corner doesnt reach bs bottom left corner
 				a.y + a.height > b.y;//as bottom left corner basses bs top left corner
+	}
+	
+	public boolean checkLeaveScreen(Block a) {
+		boolean leftScreen = false;
+		if(a.x > boardWidth) {
+			a.x = 0 + tileSize;
+			leftScreen = true;
+		}else if(a.x <0) {
+			a.x = boardWidth - tileSize;
+			leftScreen = true;
+		}
+		return leftScreen;
+		
 	}
 	
 	@Override
