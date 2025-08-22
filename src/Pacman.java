@@ -275,6 +275,12 @@ public class Pacman extends JPanel implements ActionListener, KeyListener{
 			}
 		}
 		foods.remove(foodEaten);
+		
+		if(foods.isEmpty()) {
+			//can create a new map or whatever
+			loadMap();
+			resetPositions();
+		}
 	}
 	
 	public boolean collision(Block a, Block b) {
